@@ -1,10 +1,18 @@
 const fs = require('fs');
 const path = require('path');
 
-const apiUrl = process.env.API_URL || 'https://TU-API.onrender.com/api';
-const frontendUrl =
+const trimUrl = (url) => url.replace(/\/+$/, '');
+
+const apiUrl = trimUrl(process.env.API_URL || 'https://TU-API.onrender.com/api');
+const frontendUrl = trimUrl(
   process.env.FRONTEND_URL ||
-  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://127.0.0.1:4200');
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://127.0.0.1:4200')
+);
+
+if (process.env.VERCEL && apiUrl.includes('TU-API.onrender.com')) {
+  console.error('ERROR: Define API_URL en Vercel (ej. https://foro-api-6z8f.onrender.com/api)');
+  process.exit(1);
+}
 
 const content = `export const environment = {
   production: true,
